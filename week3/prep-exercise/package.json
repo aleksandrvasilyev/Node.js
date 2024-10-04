@@ -5,9 +5,9 @@
   "main": "app.js",
   "types": "module",
   "scripts": {
-    "start": "nodemon ./server/app.js",
-    "demo": "nodemon ./server-demo/app.js",
-    "db:test": "node ./server/database.js"
+    "start": "nodemon --env-file=.env ./server/app.js",
+    "demo": "nodemon --env-file=.env ./server-demo/app.js",
+    "db:test": "node  --env-file=.env ./server/database.js"
   },
   "type": "module",
   "keywords": [],
@@ -24,4 +24,3 @@
     "nodemon": "^3.1.0"
   }
 }
-
