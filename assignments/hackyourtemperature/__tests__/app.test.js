@@ -1,4 +1,4 @@
-import app from "../server.js";
+import app from "../app.js";
 import supertest from "supertest";
 import { API_KEY } from "../sources/keys.js";
 import nock from "nock";
@@ -9,8 +9,8 @@ describe("POST /", (done) => {
     nock.cleanAll();
   });
 
-  it("main page works", () => {
-    request
+  it("App returns 200 status on the main page.", async () => {
+    await request
       .get("/")
       .expect(200)
       .then((res) => {
@@ -18,7 +18,7 @@ describe("POST /", (done) => {
       });
   });
 
-  it("user provide correct city name and has a response", async () => {
+  it("App returns 200 status when the city name is correct.", async () => {
     const mockCity = "Amsterdam";
     const mockTemp = 15;
 
@@ -37,7 +37,7 @@ describe("POST /", (done) => {
     });
   });
 
-  it("user does not provide city name", async () => {
+  it("App returns 400 status when the city name is missing.", async () => {
     await request
       .post("/weather")
       .send()
@@ -48,7 +48,12 @@ describe("POST /", (done) => {
       });
   });
 
-  it("user provides gibberish city name", async () => {
+  it("App returns 404 status when the city name is gibberish.", async () => {
+    nock("https://api.openweathermap.org")
+      .get("/data/2.5/weather")
+      .query({ q: "abcdefg", APPID: API_KEY, units: "metric" })
+      .reply(404, { message: "city not found" });
+
     await request
       .post("/weather")
       .send({ cityName: "abcdefg" })
